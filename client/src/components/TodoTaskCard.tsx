@@ -1,5 +1,5 @@
 import React, { Component, useEffect, useState } from "react";
-import {Form} from 'react-bootstrap' ;
+import {Card, Button, Badge} from 'react-bootstrap' ;
 import {ITodo} from '../data-models/models'    
 
 
@@ -11,10 +11,6 @@ export const TodoTaskCard : React.SFC<ITodo>  = (props : ITodo) => {
         props.id = 1                   ;
         props.title = "Erster Task"    ;
         props.description = "SECRET"   ;
-        props.startDate   = new Date() ;
-        props.endDate     = new Date() ;
-        props.status      = "Pending"  ;
-        props.completed   = false      ;
         setCreated( created => true )  ;
      }
     catch( error )
@@ -22,21 +18,17 @@ export const TodoTaskCard : React.SFC<ITodo>  = (props : ITodo) => {
         },[]) ;
 
 return (
-   <div> 
-        <Form.Group className="mb-3">
-            <Form.Label>CHAIN ID</Form.Label>
-            <Form.Control placeholder="00000000" disabled />
-        </Form.Group>
-        <Form.Group className="mb-3">
-            <Form.Label>CONTRACT Informations</Form.Label>
-            <Form.Text id="" > </Form.Text>
-    
-            <Form.Select disabled>
-            <option>Disabled select</option>
-            </Form.Select>
-        </Form.Group>
-        <Form.Group className="mb-3">
-            <Form.Check type="checkbox" label="Can't check this" disabled />
-        </Form.Group>
-   </div>)
+   <> 
+<Card className="card border-primary mb-3" style={{ width: '18rem' }}>
+  <Card.Img variant="top" src="holder.js/100px180" />
+  <Badge>{props.owner}</Badge>
+  <Card.Body>
+    <Card.Title>{props.title}</Card.Title>
+    <Card.Text>
+     {props.id}
+    </Card.Text>
+    <Button variant="primary">Mint to BC</Button>
+  </Card.Body>
+</Card>
+   </>)
 }

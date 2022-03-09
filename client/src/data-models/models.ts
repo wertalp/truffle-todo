@@ -4,7 +4,7 @@
     BUSINESS = 'business',
     SECRET   = 'secret'
 }
- export   interface ITodo {
+ export   interface ITodo_new {
         id          : number ,
         title       : string ,
         description : string ,
@@ -14,4 +14,13 @@
         completed   : boolean,  
         category    ?: CATEGORY 
     }
+
+    export   interface ITodo {
+        id          : number ,
+        title       : string ,
+        description : string ,
+        owner       : string
+
+    }
+
 

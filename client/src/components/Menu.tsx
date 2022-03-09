@@ -10,7 +10,7 @@ useEffect( () => {
 } )
 
 return (
-    <Navbar bg="light" expand="lg">
+    <Navbar  expand="lg" className="color-nav" >
   <Container>
     <Navbar.Brand href="#home">Blocky TODO Manager</Navbar.Brand>
     <Navbar.Toggle aria-controls="basic-navbar-nav" />

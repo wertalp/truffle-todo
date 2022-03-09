@@ -5,7 +5,8 @@ import {Menu} from './components/Menu' ;
 import {TodoForm} from './components/TodoForm' ;
 import {TodoTaskCard} from './components/TodoTaskCard';
 import {ITodo} from './data-models/models' ;
-import {Button} from 'react-bootstrap' ;
+import {Button, Container,Row,Col,CardGroup} from 'react-bootstrap' ;
+import { ChangeEvent } from 'react';
 
 import "./App.css";
 import { isTemplateTail } from "typescript";
@@ -14,7 +15,8 @@ import { isTemplateTail } from "typescript";
 const App = () =>  {
 
 
-  const myArray : number[] = [1,2,3,4,5,6,7,8] ;
+  const myArray   : number[] = [1,2,3,4,5,6,7,8] ;
+
 
 
   const [storageValue, setStorageValue] = useState(null);
@@ -22,20 +24,20 @@ const App = () =>  {
   const [accounts, setAccounts] = useState<string[]>([]) ;
   const [contract, setContract] = useState() ;
   const [netId, setNetid] = useState(1)      ;
-  const [network, setNetwork] = useState(null)   ;
+  const [network, setNetwork] = useState<string>("")   ;
+
+  const [title, setTitle] = useState<string>("")   ;
+  const [description, setDescription] = useState<string>("")   ;
+  const [owner, setOwner] = useState<string>("")   ;
+  const [testTodos, setTestTodos] = useState<number[]>([1])   ;
   
 
 
   const todo: ITodo = {
     id          : 1,
     title       :  "DEMO Title" ,
-    description :  "Demo desc" ,
-    status      : "Pending" ,
-    startDate   : new Date()   ,  
-    endDate     : new Date()   ,
-    completed   :  false,  
-
-
+    description :  "Demo desc"  ,
+    owner       :  "wertalpa"
 };
  
   useEffect( () => {
@@ -43,12 +45,9 @@ const App = () =>  {
         try {
           // Get network provider and web3 instance.
           const web3 = await getWeb3();
-  
           // Use web3 to get the user's accounts.
           const accounts = await web3.eth.getAccounts();
-
           setAccounts( accounts) ;
-          
           // Get the contract instance.
           const networkId = await web3.eth.net.getId();
           setNetid(networkId);
@@ -58,8 +57,6 @@ const App = () =>  {
             deployedNetwork && deployedNetwork.address,
           );
        
-          // Set web3, accounts, and contract to the state, and then proceed with an
-          // example of interacting with the contract's methods.
           setContract(instance);
           setWeb3( web3) ;
  
@@ -73,20 +70,45 @@ const App = () =>  {
        initialize() ;
        //runExample() ;
 
-       },[]) ;
+       },[network]) ;
 
+
+  const infosetter = async (event: ChangeEvent<HTMLInputElement>) => {
+    event.preventDefault();
+
+    switch (event.target.name){
+      case "Titel":          await  setTitle(event.target.value)   ; return ;
+      case "Beschreibung":   await setDescription(event.target.value)  ; return ;
+      case "Owner":          await setOwner(event.target.value)        ; return ;
+    }
+    let title = event.target.value ;
+     setNetwork( titlt => title.concat(event.target.value)) ;
+  }
+
+  
+  const testSubmit = (event :ChangeEvent<HTMLInputElement> ) => {
+    event.preventDefault();
+    setTestTodos( testTodos => [10,...testTodos] );
+
+  }
+
+
+   const generateTodos = () => {
+    return (      
+      <Row xs={1} md={2} className="g-4">
+        {testTodos.map((todo, idx) => ( <Col> <TodoTaskCard id={todo} title={"ETHER_3"} description={"some info"} owner={"wertalpa"} ></TodoTaskCard> </Col>
+        ))}
+      </Row>)
+      } 
 
   const runExample = async () => {
-
-    // Stores a given value, 5 by default.
     await contract.methods.set(5).send({ from: accounts[0] });
-
     // Get the value from the contract to prove it worked.
     const response = await contract.methods.get().call();
-
-    // Update state with the result.
-   setStorageValue(response) ;
+    setStorageValue(response) ;
   };
+
+
  
     if (!web3) {
       return <div>Loading Web3, accounts, and contract...</div>;
@@ -94,14 +116,30 @@ const App = () =>  {
     return (
       <div className="App">
         <Menu account={accounts[0]} networkId={74557}/> 
-        <h1>BlockChain Todo List</h1>
-        <ul> 
-        {accounts && accounts.map( acc => <li> {acc} </li>) }
-        </ul>
-      
-        <TodoTaskCard id={1} description={"MEI desc"} status={"Pending"} title="Mein Title" startDate={new Date()} endDate={new Date()}completed={false}  />
-        <div>The stored value is: {netId}</div>
-      <TodoForm account={accounts[0]}  networkId={1223}></TodoForm>
+        <h3>BlockChain Todo List</h3>
+    <Container>
+    <Row>
+    <Col> </Col>
+    <Col xs={6}>2 of 3 (wider)</Col>
+    <Col>3 of 3</Col>
+  </Row>
+  <Row>
+    <Col>   <TodoForm account={accounts[0]}  networkId={1223} testSubmit={testSubmit} handleInput={infosetter}></TodoForm></Col>
+    <Col xs={5}> <p> NetworkID = {netId} </p>
+      <  div>The stored Titel is: {title}</div>
+        <div>The stored  Description is: {description}</div>
+        <div>The stored  Owner is: {owner}</div></Col>
+    <Col> 
+     { testTodos && generateTodos() }
+    </Col>
+  </Row>
+</Container>
+  
+   
+
+
+
+
       </div>
     );
 }
