@@ -10,6 +10,7 @@ import { ChangeEvent } from 'react';
 
 import "./App.css";
 import { isTemplateTail } from "typescript";
+import Footer from "./components/Footer";
 
 
 const App = () =>  {
@@ -29,12 +30,12 @@ const App = () =>  {
   const [title, setTitle] = useState<string>("")   ;
   const [description, setDescription] = useState<string>("")   ;
   const [owner, setOwner] = useState<string>("")   ;
-  const [testTodos, setTestTodos] = useState<number[]>([1])   ;
+  const [testTodos, setTestTodos] = useState<ITodo[]>([])   ;
   
 
 
   const todo: ITodo = {
-    id          : 1,
+    id          : 2,
     title       :  "DEMO Title" ,
     description :  "Demo desc"  ,
     owner       :  "wertalpa"
@@ -70,14 +71,14 @@ const App = () =>  {
        initialize() ;
        //runExample() ;
 
-       },[network]) ;
+       },[network,testTodos]) ;
 
 
   const infosetter = async (event: ChangeEvent<HTMLInputElement>) => {
     event.preventDefault();
 
     switch (event.target.name){
-      case "Titel":          await  setTitle(event.target.value)   ; return ;
+      case "Titel":          await  setTitle(event.target.value)       ; return ;
       case "Beschreibung":   await setDescription(event.target.value)  ; return ;
       case "Owner":          await setOwner(event.target.value)        ; return ;
     }
@@ -88,7 +89,9 @@ const App = () =>  {
   
   const testSubmit = (event :ChangeEvent<HTMLInputElement> ) => {
     event.preventDefault();
-    setTestTodos( testTodos => [10,...testTodos] );
+    //alert (event.target) ;
+    console.log(event.target) ;
+    setTestTodos( testTodos => [{id:10,owner: owner , description: description,title:title},...testTodos] );
 
   }
 
@@ -96,7 +99,7 @@ const App = () =>  {
    const generateTodos = () => {
     return (      
       <Row xs={1} md={2} className="g-4">
-        {testTodos.map((todo, idx) => ( <Col> <TodoTaskCard id={todo} title={"ETHER_3"} description={"some info"} owner={"wertalpa"} ></TodoTaskCard> </Col>
+        {testTodos.map((todo, idx) => ( <Col> <TodoTaskCard id={todo.id} title={todo.title} description={todo.description} owner={todo.description} ></TodoTaskCard> </Col>
         ))}
       </Row>)
       } 
@@ -120,19 +123,18 @@ const App = () =>  {
     <Container>
     <Row>
     <Col> </Col>
-    <Col xs={6}>2 of 3 (wider)</Col>
-    <Col>3 of 3</Col>
+    <Col xs={6}></Col>
+    <Col></Col>
   </Row>
   <Row>
-    <Col>   <TodoForm account={accounts[0]}  networkId={1223} testSubmit={testSubmit} handleInput={infosetter}></TodoForm></Col>
-    <Col xs={5}> <p> NetworkID = {netId} </p>
-      <  div>The stored Titel is: {title}</div>
-        <div>The stored  Description is: {description}</div>
-        <div>The stored  Owner is: {owner}</div></Col>
-    <Col> 
-     { testTodos && generateTodos() }
+    <Col>   
+    <TodoForm account={accounts[0]}  networkId={1223} testSubmit={testSubmit} handleInput={infosetter}></TodoForm></Col>
+    <Col> <div className="span-border">
+    { testTodos && generateTodos() }
+      </div> 
     </Col>
   </Row>
+ 
 </Container>
   
    
