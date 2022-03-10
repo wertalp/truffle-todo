@@ -24,7 +24,7 @@
 .taskform {
   border: 2px solid black;
   min-width: 20%;
-  background-color: lightgray;
+  background-color: rgb(248, 244, 244);
   float: left;
   overflow: auto;
 }
@@ -55,8 +55,19 @@ div {
   border:solid 2px rgb(231, 17, 17);
   min-height: 100%;
   min-width: 100%;
+}
 
-  }  
-
-
-
+.infofoto{
+  height: 60px;
+  width: 100px;
+}
+.todopanel{
+  background-image: url('resources/bc2.png');
+  opacity: 0.5;
+}
+.right-float{
+  float: right;
+}
+.small{
+  font-size: xx-large;
+}

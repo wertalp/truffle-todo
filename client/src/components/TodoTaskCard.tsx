@@ -1,6 +1,7 @@
 import React, { Component, useEffect, useState } from "react";
 import {Card, Button, Badge} from 'react-bootstrap' ;
-import {ITodo} from '../data-models/models'    
+import {ITodo} from '../data-models/models'         ;
+import  logo from '../resources/bg3.png'          ;
 
 
 export const TodoTaskCard : React.SFC<ITodo>  = (props : ITodo) => {
@@ -19,16 +20,17 @@ export const TodoTaskCard : React.SFC<ITodo>  = (props : ITodo) => {
 
 return (
    <> 
-<Card className="card border-primary mb-3" style={{ width: '18rem' }}>
-  <Card.Img variant="top" src="holder.js/100px180" />
+<Card className="card border-primary mb-3" style={{ width: '18rem' ,margin: '10px'}}>
+  <Card.Img variant="top" src={logo} className="infofoto"/>
   <Badge>{props.owner}</Badge>
   <Card.Body>
     <Card.Title>{props.title}</Card.Title>
     <Card.Text>
-     {props.id}
+        {props.description}
     </Card.Text>
-    <Button variant="primary">Mint to BC</Button>
+    <Button variant="primary" style={{float: 'right'}}>Mint to BC</Button>
   </Card.Body>
+  <Badge bg="dark"> <h1 className="small">{props.addresse}</h1> </Badge>
 </Card>
    </>)
 }

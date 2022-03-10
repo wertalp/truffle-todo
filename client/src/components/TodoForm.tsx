@@ -5,13 +5,12 @@ import { ChangeEvent } from 'react';
 
 export const TodoForm = (props :IMenu) => { 
 
-    const [title, setTitle]      = useState('');
-    const [lastName,   setLastName]      = useState('');
-    const [description, setDescription]  = useState('');
-    const [owner, setOwner]              = useState('');
+    const [title, setTitle]      = useState('Erster Task');
+    const [lastName,   setLastName]      = useState('Wertal');
+    const [description, setDescription]  = useState('in Bern suchen ..');
+    const [owner, setOwner]              = useState('WERTALPA');
 
     useEffect( () => {
-
     
     },[]) ;
 
@@ -35,30 +34,29 @@ export const TodoForm = (props :IMenu) => {
 
 return (
      <div className="taskform">
-        <h5>Account:</h5>
-        {props.account &&  <h5> <Button type="button" className="btn btn-light"> {props.account} </Button> </h5> }
-         <Form onSubmit={props.testSubmit} >
+        <h5>CONTRACT:</h5>
+        <Button className="small">{props.account && <div>Accounts are: {props.account} </div>}  </Button> 
+         <Form onSubmit={props.testSubmit}  >
         <div>
         <label>
         Titel:
-        <input name="Titel" value={title} onChange={e => handleChange(e)}  />
+        <input name="Titel" value={title}  placeholder="1 Task" onChange={e => handleChange(e)}  />
         </label><br/>
          </div>    
      <div>
      <label>
         Description:
-        <input name="Beschreibung" value={description} onChange={e => handleChange(e)}  />
+        <input name="Beschreibung" placeholder="in Bern zu tun" value={description} onChange={e => handleChange(e)}  />
         </label><br/>
      </div>
       <div>
       <label>
         Task-Owner:
-        <input name="Owner" value={owner} onChange={e => handleChange(e)}  />
+        <input name="Owner" value={owner} placeholder="WERTALPA" onChange={e => handleChange(e)}  />
         </label><br/>
       </div>
         <input type="submit" value="Submit" />
         </Form>
-        <Button>{props.account && <div>Accounts are: {props.account} </div>}  </Button> 
      </div>
 
       
