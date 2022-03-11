@@ -35,6 +35,7 @@ const App = () =>  {
   const [testTodos, setTestTodos] = useState<ITodo[]>([])   ;
   const [accountBalance, setAccountBalance] = useState<string>("")   ;
   const [blocks ,setBlocks] = useState<IBlock[]>([]);
+  const [connected,setConnected] = useState<boolean>(false) ; 
   
   const todo: ITodo = {
     id          : 2,
@@ -84,10 +85,10 @@ const App = () =>  {
     );
     console.error(error);
   }} ;
-  initialize() ;
+    connected && initialize() ;
        //runExample() ;
 
-       },[network,testTodos,accounts,accountBalance]) ;
+       },[network,testTodos,accounts,accountBalance,connected]) ;
 
 
 
@@ -102,6 +103,11 @@ const App = () =>  {
      setNetwork( titlt => title.concat(event.target.value)) ;
   }
 
+  const connecttoBC = async () => {
+ 
+    setConnected(true) ;
+  }
+
   
   const testSubmit = async (event :ChangeEvent<HTMLInputElement> ) => {
     event.preventDefault();
@@ -111,6 +117,7 @@ const App = () =>  {
       Todo.abi,
       "0xAD7af98EDb9b38223ae834e08Ef36056a8904Bd8");
     setContract(instance);  
+    instance.
     setWeb3(web3) ;
 
     setTestTodos( testTodos => [{id:10,owner: owner , description: description,title:title},...testTodos] );
@@ -151,12 +158,10 @@ const App = () =>  {
     setStorageValue(response) ;
   };
 
-    if (!web3) {
-      return <div>Loading Web3, accounts, and contract...</div>;
-    } 
+
     return (
       <div className="App">
-        <Menu account={accounts[0]} networkId={74557}/> 
+        <Menu account={accounts[0]} networkId={74557} connectBC={connecttoBC} /> 
         <h3>BlockChain Todo List</h3>
     <Container fluid="lg">
    <Row>

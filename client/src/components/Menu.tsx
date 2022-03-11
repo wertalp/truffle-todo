@@ -1,5 +1,5 @@
 import React, { Component, useEffect } from "react";
-import {Navbar, Container ,Nav, NavDropdown } from 'react-bootstrap'
+import {Navbar, Container ,Nav, NavDropdown, Button } from 'react-bootstrap'
 import { IMenu } from "../data-models/interfaces";
 
 
@@ -25,6 +25,7 @@ return (
           <NavDropdown.Divider />
           <NavDropdown.Item href="#action/3.4">PW SS</NavDropdown.Item>
         </NavDropdown>
+        <Button variant="primary" size="lg"  onClick={props.connectBC()} > Connect</Button>
       </Nav>
     </Navbar.Collapse>
   </Container>
