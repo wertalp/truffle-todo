@@ -23,4 +23,12 @@
         addresse?    : string 
      }
 
+     export interface IBlock{
+         number ? : number   ,
+         hash   : string   ,
+         transactions ?: string[];
+         size     ?: number,
+         gasLimit ? : number
+     }
+
 

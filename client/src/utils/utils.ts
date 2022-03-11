@@ -7,3 +7,11 @@ export const getAllBlocks = async (web3 :any) =>{
     return await Promise.all(blockNumbers.map( (n:number ) => web3.eth.getBlock(n)));
 
 }
+
+export const getlatestBlock = async (web3 :any) =>{
+
+    const latest = await web3.eth.getBlockNumber()
+   
+    return await  web3.eth.getBlock(latest);
+
+}

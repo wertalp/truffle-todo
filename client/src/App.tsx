@@ -1,10 +1,11 @@
 import React, { Component, useEffect, useState } from "react";
 import SimpleStorageContract from "./contracts/SimpleStorage.json";
+import Todo from "./contracts/Todo.json";
 import getWeb3 from "./getWeb3";
 import {Menu} from './components/Menu' ;
 import {TodoForm} from './components/TodoForm' ;
 import {TodoTaskCard} from './components/TodoTaskCard';
-import {ITodo} from './data-models/models' ;
+import {IBlock, ITodo} from './data-models/models' ;
 import {Button, Container,Row,Col,CardGroup} from 'react-bootstrap' ;
 import { ChangeEvent } from 'react';
 
@@ -14,6 +15,7 @@ import Footer from "./components/Footer";
 import Web3 from "web3";
 import { InfoPinner } from "./components/InfoPinner";
 import {getAllBlocks} from './utils/utils';
+import {BlockRow} from './components/BlockRow' ;
 
 
 const App = () =>  {
@@ -32,8 +34,8 @@ const App = () =>  {
   const [owner, setOwner] = useState<string>("")   ;
   const [testTodos, setTestTodos] = useState<ITodo[]>([])   ;
   const [accountBalance, setAccountBalance] = useState<string>("")   ;
+  const [blocks ,setBlocks] = useState<IBlock[]>([]);
   
-
   const todo: ITodo = {
     id          : 2,
     title       :  "DEMO Title" ,
@@ -49,6 +51,8 @@ const App = () =>  {
           // Use web3 to get the user's accounts.
           const accounts = await web3.eth.getAccounts();
           await setAccounts( accounts) ;
+
+
           // Get the contract instance.
           const networkId = await web3.eth.net.getId();
           await setNetid(networkId);
@@ -59,16 +63,16 @@ const App = () =>  {
 
           web3.eth.getBlock(12).then( (block:any) =>  console.log("BlockNUmmer" + block)) ;
 
-          getAllBlocks(web3).then( blocks => JSON.stringify(blocks) )
+          getAllBlocks(web3).then( blocks => setBlocks(blocks) )
                             .then(console.log) ;
 
       try{
-          const deployedNetwork = SimpleStorageContract.networks[networkId];
+          const deployedNetwork = Todo.networks[networkId];
           const instance = new web3.eth.Contract(
-            SimpleStorageContract.abi,
+            Todo.abi,
             deployedNetwork && deployedNetwork.address);
           setContract(instance);
-          setWeb3( web3) ;
+          setWeb3(web3) ;
         }
       catch(error){
         alert("Fehler");
@@ -99,22 +103,46 @@ const App = () =>  {
   }
 
   
-  const testSubmit = (event :ChangeEvent<HTMLInputElement> ) => {
+  const testSubmit = async (event :ChangeEvent<HTMLInputElement> ) => {
     event.preventDefault();
     //alert (event.target) ;
     console.log(event.target) ;
+    let instance = await new web3.eth.Contract(
+      Todo.abi,
+      "0xAD7af98EDb9b38223ae834e08Ef36056a8904Bd8");
+    setContract(instance);  
+    setWeb3(web3) ;
+
     setTestTodos( testTodos => [{id:10,owner: owner , description: description,title:title},...testTodos] );
   }
 
    const generateTodos = () => {
     return (      
-      <Row xs={1} md={2}  >
+      <Row xs={1} lg={2}  >
         {testTodos.map((todo, idx) => ( <Col> 
           <TodoTaskCard id={todo.id} title={todo.title} description={todo.description} owner={todo.owner} addresse={accounts[0]}>
           </TodoTaskCard> </Col>
         ))}
       </Row>)
       } 
+
+
+   const generateBlocks = () => {
+     return (
+      <ul>
+      {blocks.filter( (item, index, array) => index >= array.length-3  )
+      .map( (block : IBlock, index :number, array :IBlock[]) => 
+              { 
+                return <li>  <BlockRow 
+                                hash={block.hash} 
+                                number={block.number} 
+                                size={block.size} 
+                                transactions={block.transactions}
+                                gasLimit={block.gasLimit} > 
+                            </BlockRow></li>}  )}
+      </ul>
+     )
+   }   
 
   const runExample = async () => {
     await contract.methods.set(5).send({ from: accounts[0] });
@@ -132,18 +160,24 @@ const App = () =>  {
         <h3>BlockChain Todo List</h3>
     <Container fluid="lg">
    <Row>
-    <Col>   
-    <div className="right-float">
-    <TodoForm account={accounts[0]}  networkId={1223} testSubmit={testSubmit} handleInput={infosetter}></TodoForm>
-    
-    <InfoPinner id={1} title={title} description={description} owner={owner} ></InfoPinner> 
+    <Col md="2">   
+    <div className="marge-float-right">
+      <TodoForm account={accounts[0]}  networkId={1223} testSubmit={testSubmit} handleInput={infosetter}></TodoForm>
+    </div>
+    <div className='InfoBox marge-float-right'>
+      <InfoPinner id={1} title={title} description={description} owner={owner} ></InfoPinner> 
     </div>
     </Col>
-    <Col > <div className="span-border">
-      <h3> Verträge in Account: </h3> {accounts[0]} 
-      {accountBalance && <h3> {accountBalance}</h3>}
-    { testTodos && generateTodos() }
+
+    <Col md="6" > <div className="span-border">
+      <h5> Verträge in Account: </h5> {accounts[0]} 
+      {accountBalance && <h5> {accountBalance}</h5>}
+     { testTodos && generateTodos() }
       </div> 
+    </Col>
+
+    <Col md="3"> 
+     { generateBlocks()}
     </Col>
   </Row>
  

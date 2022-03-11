@@ -22,8 +22,8 @@
 }
 
 .taskform {
-  border: 2px solid black;
-  min-width: 20%;
+  border: 1px dashed black;
+  min-width: 500px;
   background-color: rgb(248, 244, 244);
   float: left;
   overflow: auto;
@@ -70,4 +70,55 @@ div {
 }
 .small{
   font-size: xx-large;
+}
+
+.custom-btn {
+  background: #fff;
+  color: green;
+  border: 2px solid red;
+  border-radius: 3px;
+  padding: 5px 10px;
+  text-transform: uppercase;
+  float: right;
+  margin: 12px;
+}
+
+.marge-float-right{
+margin: 20px;
+float: right;  
+}
+
+.InfoBox{
+  border: black 1px dashed;
+  min-width: 100% ;
+  float: right;  
+}
+
+.block{
+  height:    auto;
+  min-width: 400px;
+  min-height: 80px;
+  background-color:rgb(221, 247, 175) ;
+  border: 1px solid rgb(69, 12, 224);
+}
+
+.blockinfosmall{
+font-size: 10px;
+}
+
+.blockinfomedium{
+font-size: 12px;
+}
+.blockinfolarge{
+  font-size: 14px;
+  }
+
+ul{
+  list-style-type: none;
+ }
+ li{
+  list-style-type: none;
+ }
+ p {
+  line-height: 0.8;
 }
