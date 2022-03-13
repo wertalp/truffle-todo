@@ -37,7 +37,7 @@ return (
         <h5>CONTRACT:</h5>
         <p className="small"> ACCOUNT</p>
         <Button style={{float: 'right'}}  variant="outline-dark" size="sm" > {props.account && <div>{props.account} </div>}  </Button> 
-         <Form onSubmit={props.testSubmit}  >
+         <Form onSubmit={props.formSubmit}  >
         <div>
         <label>
         Titel:
@@ -56,7 +56,7 @@ return (
         <input name="Owner" value={owner} placeholder="WERTALPA" onChange={e => handleChange(e)}  />
         </label><br/>
       </div>
-        <input type="submit" value="Create" class="custom-btn" />
+        <input type="submit" value="Create" className="custom-btn" />
         </Form>
      </div>
 

@@ -1,0 +1,20 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-truffletodo-dev-151720-authRole",
+      "UnauthRoleArn": "arn:aws:iam::347987868616:role/amplify-truffletodo-dev-151720-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::347987868616:role/amplify-truffletodo-dev-151720-authRole",
+      "Region": "eu-central-1",
+      "DeploymentBucketName": "amplify-truffletodo-dev-151720-deployment",
+      "UnauthRoleName": "amplify-truffletodo-dev-151720-unauthRole",
+      "StackName": "amplify-truffletodo-dev-151720",
+      "StackId": "arn:aws:cloudformation:eu-central-1:347987868616:stack/amplify-truffletodo-dev-151720/23bcaee0-a20f-11ec-b0eb-02e95820e648",
+      "AmplifyAppId": "d3k0yyb698tbah"
+    },
+    "categories": {
+      "auth": {
+        "truffletodo1ccda6f2": {}
+      }
+    }
+  }
+}

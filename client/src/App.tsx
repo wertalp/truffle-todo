@@ -2,6 +2,7 @@ import React, { Component, useEffect, useState } from "react";
 import SimpleStorageContract from "./contracts/SimpleStorage.json";
 import Todo from "./contracts/Todo.json";
 import getWeb3 from "./getWeb3";
+import Web3 from "web3";
 import {Menu} from './components/Menu' ;
 import {TodoForm} from './components/TodoForm' ;
 import {TodoTaskCard} from './components/TodoTaskCard';
@@ -12,23 +13,29 @@ import { ChangeEvent } from 'react';
 import "./App.css";
 import { isTemplateTail } from "typescript";
 import Footer from "./components/Footer";
-import Web3 from "web3";
 import { InfoPinner } from "./components/InfoPinner";
-import {getAllBlocks} from './utils/utils';
+import {getAllBlocks, createContract,showError} from './utils/utils';
 import {BlockRow} from './components/BlockRow' ;
 
+import { Amplify, Auth } from 'aws-amplify';
 
-const App = () =>  {
+import { withAuthenticator, AmplifySignOut } from '@aws-amplify/ui-react';
+
+
+import awsExports from './aws-exports';
+
+Amplify.configure(awsExports);
+
+const App = ( ) =>  {
 
   const myArray   : number[] = [1,2,3,4,5,6,7,8] ;
 
   const [storageValue, setStorageValue] = useState(null);
-  const [web3, setWeb3] = useState( null)    ;
+  const [web3, setWeb3] = useState(null)    ;
   const [accounts, setAccounts] = useState<string[]>([]) ;
-  const [contract, setContract] = useState<any>(null) ;
+  const [contract, setContract] = useState<Web3.eth.Contract>(null) ;
   const [netId, setNetid] = useState(1)      ;
-  const [network, setNetwork] = useState<string>("")   ;
-
+  
   const [title, setTitle] = useState<string>("")   ;
   const [description, setDescription] = useState<string>("")   ;
   const [owner, setOwner] = useState<string>("")   ;
@@ -36,6 +43,7 @@ const App = () =>  {
   const [accountBalance, setAccountBalance] = useState<string>("")   ;
   const [blocks ,setBlocks] = useState<IBlock[]>([]);
   const [connected,setConnected] = useState<boolean>(false) ; 
+  const [iamconfig,setIamConfig] = useState<any>({});
   
   const todo: ITodo = {
     id          : 2,
@@ -43,53 +51,50 @@ const App = () =>  {
     description :  "Demo desc"  ,
     owner       :  "wertalpa"
 };
- 
+   let myweb3 : Web3  ;
+   const currentConfig = Auth.configure();
+
   useEffect( () => {
-       const initialize = async () => {
+    const startwebup = async () => {
+      if (window.ethereum ){ 
         try {
-          // Get network provider and web3 instance.
-          const web3 = await getWeb3();
-          // Use web3 to get the user's accounts.
-          const accounts = await web3.eth.getAccounts();
-          await setAccounts( accounts) ;
+          console.log("Aufruf useeffect initialize conencted: "+connected)                 ;  
+          console.log("Aufruf useeffect initialize AUTH: "+ JSON.stringify(currentConfig)) ;  
+          getWeb3()
+              .then( (web3)   => setWeb3(web3),
+                    (error)  => showError(error) ) ;
+           }
+           catch(e: any ) {
+           console.log("error"); 
+           }
+      }}
 
+     
+    const initialize = async () => {
+     
+      try {
+        web3.eth.requestAccounts().then( (account : any ) => {setAccounts(account) })
+        web3.eth.net.getId().then( (netId:any) => setNetid(netId))
+        web3.eth.getBalance(accounts[0])
+            .then( (result: any  ) => web3.utils.fromWei(result,"ether"))
+            .then( (balance: any ) => setAccountBalance(balance));
 
-          // Get the contract instance.
-          const networkId = await web3.eth.net.getId();
-          await setNetid(networkId);
-
-          await web3.eth.getBalance(accounts[0])
-          .then( (result: any  ) => web3.utils.fromWei(result,"ether"))
-          .then( (balance: any ) => setAccountBalance(balance));
-
-          web3.eth.getBlock(12).then( (block:any) =>  console.log("BlockNUmmer" + block)) ;
-
-          getAllBlocks(web3).then( blocks => setBlocks(blocks) )
-                            .then(console.log) ;
-
-      try{
-          const deployedNetwork = Todo.networks[networkId];
-          const instance = new web3.eth.Contract(
-            Todo.abi,
-            deployedNetwork && deployedNetwork.address);
-          setContract(instance);
-          setWeb3(web3) ;
+        getAllBlocks(web3).then( blocks => setBlocks(blocks) )
+                          .then(console.log) ;
+        setIamConfig(currentConfig);                   
+       }
+       catch (error) {
+        alert(
+           `Failed to load web3, accounts, or contract. Check console for details.`,
+         );
+         console.error(error);
         }
-      catch(error){
-        alert("Fehler");
       }
-  } catch (error) {
-    // Catch any errors for any of the above operations.
-    alert(
-      `Failed to load web3, accounts, or contract. Check console for details.`,
-    );
-    console.error(error);
-  }} ;
-    connected && initialize() ;
-       //runExample() ;
 
-       },[network,testTodos,accounts,accountBalance,connected]) ;
-
+      startwebup() ; 
+      connected && initialize() ;
+  
+       },[connected, netId]) ;
 
 
   const infosetter = async (event: ChangeEvent<HTMLInputElement>) => {
@@ -100,24 +105,33 @@ const App = () =>  {
       case "Owner":          await setOwner(event.target.value)        ; return ;
     }
     let title = event.target.value ;
-     setNetwork( titlt => title.concat(event.target.value)) ;
+    
   }
 
   const connecttoBC = async () => {
- 
-    setConnected(true) ;
+    setConnected(connected => ! connected) ;
+   // setNetid(netId => netId +1) ;
   }
 
   
-  const testSubmit = async (event :ChangeEvent<HTMLInputElement> ) => {
+  const formSubmit = async (event :ChangeEvent<HTMLInputElement> ) => {
     event.preventDefault();
     //alert (event.target) ;
     console.log(event.target) ;
     let instance = await new web3.eth.Contract(
       Todo.abi,
-      "0xAD7af98EDb9b38223ae834e08Ef36056a8904Bd8");
-    setContract(instance);  
-    instance.
+      "0x55EF2E4015AcC605789BA5D09299e50007dbd0e3",
+      {
+        from: '0x56D199C4C9479DEcFd9504785ADD14aeeDEe732a', // default from address
+        gasPrice: '200000000000000' }) ;
+     setContract(instance);  
+     instance.methods.createTask("Fenster Putzen").send({ from: accounts[0] }).
+      then( (info: any) => console.log(JSON.stringify(info) ));
+        
+    // Get the value from the contract to prove it worked.
+    const response = await instance.methods.createTask("WIEDER").call(); 
+
+    //runExample() ;
     setWeb3(web3) ;
 
     setTestTodos( testTodos => [{id:10,owner: owner , description: description,title:title},...testTodos] );
@@ -152,7 +166,7 @@ const App = () =>  {
    }   
 
   const runExample = async () => {
-    await contract.methods.set(5).send({ from: accounts[0] });
+    await contract.methods.createTask("FensterPutzen").send({ from: accounts[0] });
     // Get the value from the contract to prove it worked.
     const response = await contract.methods.get().call();
     setStorageValue(response) ;
@@ -161,13 +175,13 @@ const App = () =>  {
 
     return (
       <div className="App">
-        <Menu account={accounts[0]} networkId={74557} connectBC={connecttoBC} /> 
-        <h3>BlockChain Todo List</h3>
+        <Menu account={accounts[0]} networkId={netId} connectBC={connecttoBC} userPoolId={iamconfig.userPoolId} /> 
+        <h3>BlockChain Todo List </h3>
     <Container fluid="lg">
    <Row>
     <Col md="2">   
     <div className="marge-float-right">
-      <TodoForm account={accounts[0]}  networkId={1223} testSubmit={testSubmit} handleInput={infosetter}></TodoForm>
+      <TodoForm account={accounts[0]}  networkId={1223} formSubmit={formSubmit} handleInput={infosetter}></TodoForm>
     </div>
     <div className='InfoBox marge-float-right'>
       <InfoPinner id={1} title={title} description={description} owner={owner} ></InfoPinner> 
@@ -182,13 +196,14 @@ const App = () =>  {
     </Col>
 
     <Col md="3"> 
-     { generateBlocks()}
+     { blocks && generateBlocks()}
     </Col>
   </Row>
  
 </Container>
+<AmplifySignOut/>
 </div>
     );
 }
 
-export default App;
+export default withAuthenticator(App);

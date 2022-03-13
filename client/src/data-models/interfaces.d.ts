@@ -4,6 +4,8 @@ export interface IMenu {
 
     account    : string ;
     networkId  : number ;
+    userPoolId ?: string ;
     handleInput ? : (_input :Event)  => void ;
-    testSubmit  ? : (_input :FormEvent<HTMLFormElement>)  => FormEventHandler<HTMLFormElement> ;
+    formSubmit  ? : (_input :FormEvent<HTMLFormElement>)  => void ;
+    connectBC   ? : () => void ;
 }

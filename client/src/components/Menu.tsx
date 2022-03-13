@@ -10,7 +10,7 @@ useEffect( () => {
 } )
 
 return (
-    <Navbar  expand="lg" className="color-nav" >
+  <Navbar  expand="lg" className="color-nav" >
   <Container>
     <Navbar.Brand href="#home">Blocky TODO Manager</Navbar.Brand>
     <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -25,8 +25,10 @@ return (
           <NavDropdown.Divider />
           <NavDropdown.Item href="#action/3.4">PW SS</NavDropdown.Item>
         </NavDropdown>
-        <Button variant="primary" size="lg"  onClick={props.connectBC()} > Connect</Button>
+
       </Nav>
+      <Button  variant="primary" className="marge-float-right" size="lg"  onClick={props.connectBC} > Connect</Button>
+      {props.userPoolId ? props.userPoolId : <h3>not connected</h3>}
     </Navbar.Collapse>
   </Container>
 </Navbar>

@@ -15,3 +15,14 @@ export const getlatestBlock = async (web3 :any) =>{
     return await  web3.eth.getBlock(latest);
 
 }
+
+export const createContract = async (web3 : any , Todo :any, netID :number)  => {
+      return  await new web3.eth.Contract(
+                     Todo.abi,
+                     1337 );
+
+}
+
+export const showError = ( error : any) => {
+    alert(JSON.stringify(error)) ;
+}
