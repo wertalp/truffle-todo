@@ -115,7 +115,7 @@ useEffect( () => {
       Todo.abi,
       "0x55EF2E4015AcC605789BA5D09299e50007dbd0e3",
       {
-      from: '0x56D199C4C9479DEcFd9504785ADD14aeeDEe732a', // default from address
+      from: accounts[0], // default from address
       gasPrice: '7700000000000' }) ;
      setContract(instance);  
      instance.methods.createTask(title).send({ from: accounts[0] }).
