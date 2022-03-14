@@ -5,7 +5,7 @@ import { ChangeEvent } from 'react';
 
 export const TodoForm = (props :IMenu) => { 
 
-    const [title, setTitle]      = useState('Erster Task');
+    const [title, setTitle]      = useState('Drucker einschicken');
     const [lastName,   setLastName]      = useState('Wertal');
     const [description, setDescription]  = useState('in Bern suchen ..');
     const [owner, setOwner]              = useState('WERTALPA');
@@ -13,6 +13,10 @@ export const TodoForm = (props :IMenu) => {
     useEffect( () => {
     
     },[]) ;
+
+ const handlelistChange = (event: any) =>  {
+    setOwner( owner => event.target.value );
+ }   
 
 
  const handleChange = async (event: ChangeEvent<HTMLInputElement> ) => {
@@ -31,23 +35,22 @@ export const TodoForm = (props :IMenu) => {
     console.log(event.target.value);
  }
 
-
 return (
      <div className="taskform">
         <h5>CONTRACT:</h5>
         <p className="small"> ACCOUNT</p>
         <Button style={{float: 'right'}}  variant="outline-dark" size="sm" > {props.account && <div>{props.account} </div>}  </Button> 
-         <Form onSubmit={props.formSubmit}  >
+         <Form onSubmit={(e: any) => props.formSubmit(e)}  >
         <div>
         <label>
         Titel:
-        <input name="Titel" value={title}  placeholder="1 Task" onChange={e => handleChange(e)}  />
+        <input name="Titel" value={title}  placeholder="Drucker reparieren" onChange={e => handleChange(e)}  />
         </label><br/>
          </div>    
      <div>
      <label>
         Description:
-        <input name="Beschreibung" placeholder="in Bern zu tun" value={description} onChange={e => handleChange(e)}  />
+        <input name="Beschreibung" placeholder="ist ein Laser" value={description} onChange={e => handleChange(e)}  />
         </label><br/>
      </div>
       <div>
@@ -56,6 +59,15 @@ return (
         <input name="Owner" value={owner} placeholder="WERTALPA" onChange={e => handleChange(e)}  />
         </label><br/>
       </div>
+      <div>
+      <select value={owner} onChange={e => handlelistChange(e)}>            
+            <option value="wertalpa">wertalpa</option>
+            <option value="ninoha">ninoha</option>
+            <option value="MarieWo">MarieWo</option>
+            <option value="chrissTr">chrissTR</option>
+          </select>
+      </div>
+
         <input type="submit" value="Create" className="custom-btn" />
         </Form>
      </div>
