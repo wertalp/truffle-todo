@@ -15,7 +15,7 @@
   import {getAllBlocks, createContract,showError} from './utils/utils';
   import {BlockRow} from './components/BlockRow' ;
   import { Amplify, Auth } from 'aws-amplify';
-  import { withAuthenticator, AmplifySignOut } from '@aws-amplify/ui-react';
+  import { withAuthenticator, AmplifySignOut} from '@aws-amplify/ui-react';
   import awsExports from './aws-exports';
   import "./App.css";
 
@@ -23,20 +23,22 @@
 
   const App = ( ) =>  {
 
-  const myArray   : number[] = [1,2,3,4,5,6,7,8] ;
-  const [storageValue, setStorageValue] = useState(null);
-  const [web3, setWeb3] = useState(null)    ;
-  const [accounts, setAccounts] = useState<string[]>([]) ;
-  const [contract, setContract] = useState<Web3.eth.Contract>(null) ;
-  const [netId, setNetid] = useState(1)      ;
-  const [title, setTitle] = useState<string>("")   ;
-  const [description, setDescription] = useState<string>("")   ;
-  const [owner, setOwner] = useState<string>("")   ;
-  const [testTodos, setTestTodos] = useState<ITodo[]>([])   ;
-  const [accountBalance, setAccountBalance] = useState<string>("")   ;
-  const [blocks ,setBlocks] = useState<IBlock[]>([]);
-  const [connected,setConnected] = useState<boolean>(false) ; 
-  const [iamconfig,setIamConfig] = useState<any>({});
+    const myArray   : number[] = [1,2,3,4,5,6,7,8] ;
+    const [storageValue, setStorageValue] = useState(null);
+    const [web3, setWeb3] = useState(null)    ;
+    const [accounts, setAccounts] = useState<string[]>([]) ;
+    const [contract, setContract] = useState<Web3.eth.Contract>(null) ;
+    const [netId, setNetid] = useState(1)      ;
+    const [title, setTitle] = useState<string>("")   ;
+    const [description, setDescription] = useState<string>("")   ;
+    const [owner, setOwner] = useState<string>("")   ;
+    const [testTodos, setTestTodos] = useState<ITodo[]>([])   ;
+    const [accountBalance, setAccountBalance] = useState<string>("")   ;
+    const [blocks ,setBlocks] = useState<IBlock[]>([]);
+    const [connected,setConnected] = useState<boolean>(false) ; 
+    const [iamconfig,setIamConfig] = useState<any>({});
+    const [user,setUser] = useState<any>(null);
+ 
 
   
   const todo: ITodo = {
@@ -49,6 +51,7 @@
    const currentConfig = Auth.configure();
 
 useEffect( () => {
+ 
   const startwebup = async () => {
     if (window.ethereum ){ 
       try {
@@ -168,12 +171,13 @@ useEffect( () => {
   };
 
     return (
-      <div className="App">
+    <div className="App">
         <Menu account={accounts[0]} networkId={netId} connectBC={connecttoBC} userPoolId={iamconfig.userPoolId} /> 
         <h3>BlockChain Todo List </h3>
     <Container fluid="lg">
    <Row>
     <Col md="2">   
+    {user && <h3> {user}</h3>}
     <div className="marge-float-right">
       <TodoForm account={accounts[0]}  networkId={1223} formSubmit={formSubmit} handleInput={infosetter}></TodoForm>
     </div>
@@ -200,4 +204,4 @@ useEffect( () => {
     );
 }
 
-export default withAuthenticator(App);
+export default withAuthenticator(App, {});

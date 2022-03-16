@@ -2,6 +2,8 @@
 pragma solidity >=0.4.22 <0.9.0;
 
 contract Todo {
+
+  mapping (address => uint) balances;
   uint public count = 0;
 
   struct Task {
@@ -23,7 +25,7 @@ contract Todo {
     bool completed
   );
 
-  constructor() public {
+  constructor()  {
     createTask("Test Task");
   }
 
@@ -39,4 +41,12 @@ contract Todo {
     tasks[_id] = _task;
     emit TaskCompleted(_id, _task.completed);
   }
+
+  function getCounter() public view returns (uint) {
+    return count ;
+  }
+
+  function getBalance(address addr) public view returns(uint) {
+    return balances[addr];
+}
 }
